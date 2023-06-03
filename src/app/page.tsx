@@ -23,7 +23,35 @@ export default function Home() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [filter, setFilter] = useState<"BUY" | "SELL" | "ALL">("ALL");
 
-  //use effect to connect to websocket and receive data
+  useEffect(() => {
+    //connect to websocket
+    const websocket = new WebSocket(WEBSOCKET_URL);
+
+    websocket.onopen = () => {
+      websocket.send(JSON.stringify(SUBSCRIPTION_MESSAGE));
+    };
+
+    websocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      //retrieve trades of type 'match' and limit to 20 trades
+      if (data.type === "match") {
+        setTrades((prevTrades) => [data, ...prevTrades].slice(0, 20));
+      }
+    };
+
+    return () => {
+      //when component unmounts
+      websocket.close();
+    };
+  }, []);
+
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter(event.target.value as "BUY" | "SELL" | "ALL");
+  };
+
+  const filteredTrades = trades.filter((trade) => {
+    return true; //TODO
+  });
 
   return (
     <div>
@@ -45,7 +73,15 @@ export default function Home() {
           </tr>
         </thead>
         <tbody>
-          <tr>test</tr>
+          {filteredTrades.map((trade) => (
+            <tr key={trade.trade_id}>
+              <td>{trade.trade_id}</td>
+              <td>{trade.side.toUpperCase()}</td>
+              <td>{trade.price}</td>
+              <td>{trade.size}</td>
+              <td>{new Date(trade.time).toLocaleTimeString()}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
