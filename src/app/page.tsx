@@ -1,6 +1,6 @@
 "use client"; //required to mark as client side code in NextJS 13
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // import { Trade } from "./types"; TODO
 
 interface Trade {
@@ -23,30 +23,39 @@ export default function Home() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [filter, setFilter] = useState<"BUY" | "SELL" | "ALL">("ALL");
   const [isConnected, setIsConnected] = useState(false);
+  const websocket = useRef<WebSocket | null>(null); //since websocket connected only once, useRef is used over useState
+
+  //useEffect refactored so websocket connected only on render, and not on every time user toggles the connected button
 
   useEffect(() => {
     //connect to websocket
-    if (!isConnected) return;
+    websocket.current = new WebSocket(WEBSOCKET_URL);
 
-    const websocket = new WebSocket(WEBSOCKET_URL);
-
-    websocket.onopen = () => {
-      websocket.send(JSON.stringify(SUBSCRIPTION_MESSAGE));
+    websocket.current.onopen = () => {
+      websocket.current?.send(JSON.stringify(SUBSCRIPTION_MESSAGE));
     };
 
-    websocket.onmessage = (event) => {
+    const webSocket = websocket.current;
+
+    return () => {
+      //when component unmounts
+      webSocket.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    //listen for messages
+    if (!websocket.current) return;
+
+    websocket.current.onmessage = (event) => {
+      if (!isConnected) return;
       const data = JSON.parse(event.data);
       //retrieve trades of type 'match' and limit to 20 trades
       if (data.type === "match") {
         setTrades((prevTrades) => [data, ...prevTrades].slice(0, 20));
       }
     };
-
-    return () => {
-      //when component unmounts
-      websocket.close();
-    };
-  }, [isConnected]);
+  }, [isConnected]); //only run when isConnected changes
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(event.target.value as "BUY" | "SELL" | "ALL");
