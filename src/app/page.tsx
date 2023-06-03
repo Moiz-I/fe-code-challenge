@@ -1,16 +1,8 @@
 "use client"; //required to mark as client side code in NextJS 13
 
 import React, { useEffect, useRef, useState } from "react";
-// import { Trade } from "./types"; TODO
-
-interface Trade {
-  //refactor this
-  trade_id: string;
-  price: number;
-  size: number;
-  side: string;
-  time: string;
-}
+import Trade from "../..//types/Trade";
+import Table from "./Components/Table";
 
 const WEBSOCKET_URL = "wss://ws-feed.exchange.coinbase.com";
 const SUBSCRIPTION_MESSAGE = {
@@ -71,39 +63,35 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Latest Trades for ETH-USD</h1>
-      <label htmlFor="filter">Filter: </label>
-      <select id="filter" value={filter} onChange={handleFilterChange}>
-        <option value="ALL">All</option>
-        <option value="BUY">Buy</option>
-        <option value="SELL">Sell</option>
-      </select>
-      <table>
-        <thead>
-          <tr>
-            <th>Trade ID</th>
-            <th>Price</th>
-            <th>Size</th>
-            <th>Side</th>
-            <th>Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredTrades.map((trade) => (
-            <tr key={trade.trade_id}>
-              <td>{trade.trade_id}</td>
-              <td>{trade.side.toUpperCase()}</td>
-              <td>{trade.price}</td>
-              <td>{trade.size}</td>
-              <td>{new Date(trade.time).toLocaleTimeString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button onClick={toggleConnection}>
-        {isConnected ? "Disconnect" : "Connect"}
-      </button>
+    <div className="mt-2 flex flex-col p-10 items-center">
+      <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
+        <h1 className="text-lg font-semibold px-8">
+          Latest Trades for ETH-USD
+        </h1>
+        <Table filteredTrades={filteredTrades} />
+        <div className="flex flex-row justify-end px-10">
+          <button
+            onClick={toggleConnection}
+            className={`text-white font-semibold py-2 px-4 mr-3 rounded flex ${
+              isConnected
+                ? "bg-red-500 hover:bg-red-700"
+                : "bg-green-500 hover:bg-green-700"
+            }`}
+          >
+            {isConnected ? "Disconnect" : "Connect"}
+          </button>
+          <select
+            id="filter"
+            value={filter}
+            onChange={handleFilterChange}
+            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+          >
+            <option value="ALL">All</option>
+            <option value="BUY">Buy</option>
+            <option value="SELL">Sell</option>
+          </select>
+        </div>
+      </div>
     </div>
   );
 }
