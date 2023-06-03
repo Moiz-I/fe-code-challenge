@@ -67,9 +67,7 @@ export default function Home() {
   return (
     <div className="mt-2 flex flex-col p-10 items-center">
       <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
-        <h1 className="text-lg font-semibold px-8">
-          Latest Trades for ETH-USD
-        </h1>
+        <h1 className="text-lg font-bold px-8">Latest Trades for ETH-USD</h1>
         <Table filteredTrades={filteredTrades} />
         <div className="flex flex-row justify-end px-10">
           <ToggleConnectionButton

@@ -12,7 +12,7 @@ const Table: FC<TableProps> = ({ filteredTrades }) => {
     <div className="py-4 sm:px-6 lg:px-8">
       <div className="shadow-md border-gray-200 rounded-lg">
         <table className="table-auto divide-y divide-gray-200 block">
-          <thead className="bg-gray-50 block text-sm">
+          <thead className="bg-gray-100 block text-sm">
             <tr>
               <th className="px-6 py-4 text-right min-w-[150px]">Trade ID</th>
               <th className="px-6 py-4 text-right min-w-[150px]">Side</th>
@@ -30,7 +30,7 @@ const Table: FC<TableProps> = ({ filteredTrades }) => {
             {filteredTrades.map((trade) => (
               <tr
                 key={trade.trade_id}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 font-mono"
+                className=" border-b bg-gray-50 font-mono animate-pulse"
               >
                 <td className="px-6 py-4 text-right min-w-[150px]">
                   {trade.trade_id}

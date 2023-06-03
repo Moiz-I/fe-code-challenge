@@ -1,7 +1,26 @@
 /** @type {import('tailwindcss').Config} */
-export const content = [
-  "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-  "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-  "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-];
-export const plugins = [];
+module.exports = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      animation: {
+        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1)",
+      },
+      keyframes: {
+        pulse: {
+          "0%, 100%": {
+            opacity: 1,
+          },
+          "50%": {
+            opacity: 0.5,
+          },
+        },
+      },
+    },
+  },
+  plugins: [],
+};
