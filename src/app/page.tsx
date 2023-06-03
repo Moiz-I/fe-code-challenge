@@ -3,6 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Trade from "../..//types/Trade";
 import Table from "./Components/Table";
+import ToggleConnectionButton from "./Components/ToggleConnectionButton";
+import TradeFilter from "./Components/TradeFilter";
 
 const WEBSOCKET_URL = "wss://ws-feed.exchange.coinbase.com";
 const SUBSCRIPTION_MESSAGE = {
@@ -70,26 +72,14 @@ export default function Home() {
         </h1>
         <Table filteredTrades={filteredTrades} />
         <div className="flex flex-row justify-end px-10">
-          <button
-            onClick={toggleConnection}
-            className={`text-white font-semibold py-2 px-4 mr-3 rounded flex ${
-              isConnected
-                ? "bg-red-500 hover:bg-red-700"
-                : "bg-green-500 hover:bg-green-700"
-            }`}
-          >
-            {isConnected ? "Disconnect" : "Connect"}
-          </button>
-          <select
-            id="filter"
-            value={filter}
-            onChange={handleFilterChange}
-            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-          >
-            <option value="ALL">All</option>
-            <option value="BUY">Buy</option>
-            <option value="SELL">Sell</option>
-          </select>
+          <ToggleConnectionButton
+            toggleConnection={toggleConnection}
+            isConnected={isConnected}
+          />
+          <TradeFilter
+            filter={filter}
+            handleFilterChange={handleFilterChange}
+          />
         </div>
       </div>
     </div>
