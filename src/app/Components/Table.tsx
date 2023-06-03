@@ -22,7 +22,11 @@ const Table: FC<TableProps> = ({ filteredTrades }) => {
             </tr>
           </thead>
           <tbody className="text-sm block w-full overflow-auto h-96">
-            {filteredTrades.length === 0 && <p>empty</p>}
+            {filteredTrades.length === 0 && (
+              <p className="text-center py-20 text-gray-400">
+                Waiting for connection..
+              </p>
+            )}
             {filteredTrades.map((trade) => (
               <tr
                 key={trade.trade_id}
@@ -35,13 +39,13 @@ const Table: FC<TableProps> = ({ filteredTrades }) => {
                   {trade.side.toUpperCase()}
                 </td>
                 <td className="px-6 py-4 text-right min-w-[150px]">
-                  {trade.price}
+                  {Number(trade.price).toFixed(1)}
                 </td>
                 <td className="px-6 py-4 text-right min-w-[150px]">
-                  {trade.size}
+                  {Number(trade.size).toFixed(8)}
                 </td>
                 <td className="px-6 py-4 text-right min-w-[150px]">
-                  {trade.time}
+                  {new Date(trade.time).toLocaleTimeString()}
                 </td>
               </tr>
             ))}
