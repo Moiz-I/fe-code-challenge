@@ -22,8 +22,12 @@ const SUBSCRIPTION_MESSAGE = {
 export default function Home() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [filter, setFilter] = useState<"BUY" | "SELL" | "ALL">("ALL");
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    //connect to websocket
+    if (!isConnected) return;
+
     const websocket = new WebSocket(WEBSOCKET_URL);
 
     websocket.onopen = () => {
@@ -42,7 +46,7 @@ export default function Home() {
       //when component unmounts
       websocket.close();
     };
-  }, []);
+  }, [isConnected]);
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(event.target.value as "BUY" | "SELL" | "ALL");
@@ -52,6 +56,10 @@ export default function Home() {
     if (filter === "ALL") return true;
     return trade.side === filter.toLowerCase();
   });
+
+  const toggleConnection = () => {
+    setIsConnected((prevIsConnected) => !prevIsConnected);
+  };
 
   return (
     <div>
@@ -84,6 +92,9 @@ export default function Home() {
           ))}
         </tbody>
       </table>
+      <button onClick={toggleConnection}>
+        {isConnected ? "Disconnect" : "Connect"}
+      </button>
     </div>
   );
 }
