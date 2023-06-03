@@ -24,7 +24,6 @@ export default function Home() {
   const [filter, setFilter] = useState<"BUY" | "SELL" | "ALL">("ALL");
 
   useEffect(() => {
-    //connect to websocket
     const websocket = new WebSocket(WEBSOCKET_URL);
 
     websocket.onopen = () => {
@@ -50,14 +49,15 @@ export default function Home() {
   };
 
   const filteredTrades = trades.filter((trade) => {
-    return true; //TODO
+    if (filter === "ALL") return true;
+    return trade.side === filter.toLowerCase();
   });
 
   return (
     <div>
       <h1>Latest Trades for ETH-USD</h1>
       <label htmlFor="filter">Filter: </label>
-      <select id="filter" value={filter} onChange={() => {}}>
+      <select id="filter" value={filter} onChange={handleFilterChange}>
         <option value="ALL">All</option>
         <option value="BUY">Buy</option>
         <option value="SELL">Sell</option>
